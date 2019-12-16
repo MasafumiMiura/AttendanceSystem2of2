@@ -1,4 +1,3 @@
-
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
@@ -11,7 +10,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @worked_sum = @attendances.where.not(stargted_at:nil).count
+    @worked_sum = @attendances.where.not(started_at: nil).count
   end
 
   def new
@@ -52,10 +51,8 @@ class UsersController < ApplicationController
 
   def update_basic_info
     if @user.update_attributes(basic_info_params)
-      # 更新成功時の処理
       flash[:success] = "#{@user.name}の基本情報を更新しました。"
     else
-      # 更新失敗時の処理
       flash[:danger] = "#{@user.name}の更新は失敗しました。<br>" + @user.errors.full_messages.join("<br>")
     end
     redirect_to users_url
@@ -69,32 +66,6 @@ class UsersController < ApplicationController
 
     def basic_info_params
       params.require(:user).permit(:department, :basic_time, :work_time)
-    end
-    
-    # beforeフィルター
-
-    # paramsハッシュからユーザーを取得します。
-    def set_user
-      @user = User.find(params[:id])
-    end
-
-    # ログイン済みのユーザーか確認します。
-    def logged_in_user
-      unless logged_in?
-        store_location
-        flash[:danger] = "ログインしてください。"
-        redirect_to login_url
-      end
-    end
-
-    # アクセスしたユーザーが現在ログインしているユーザーか確認します。
-    def correct_user
-      redirect_to(root_url) unless current_user?(@user)
-    end
-
-    # システム管理権限所有かどうか判定します。
-    def admin_user
-      redirect_to root_url unless current_user.admin?
     end
 end
 

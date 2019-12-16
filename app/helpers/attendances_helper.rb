@@ -7,7 +7,7 @@ module AttendancesHelper
             return '出勤' if attendance.started_at.present? && attendance.finished_at.nil?
         end
         
-        retun false
+        return false
     end
     
     def working_times(start, finish)
